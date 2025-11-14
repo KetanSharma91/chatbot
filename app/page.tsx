@@ -15,7 +15,7 @@ export default function Home() {
   const [loadingId, setLoadingId] = useState<number | null>(null);
 
   const getRepsonses = async () => {
-    await deleteAll(); // delete all history;
+    // await deleteAll(); // delete all history;
 
     const response = await getConversations();
     setConversations(response);
