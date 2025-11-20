@@ -1,6 +1,38 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+const structure = `When answering, choose the response style based on the question:
+
+- If the question needs a detailed, organized explanation, use the structured format below.
+- If the question is simple or does not require structure, answer normally in clear, direct sentences.
+
+Structured format (use only when appropriate):
+
+[Intro]
+A short, natural introduction (2–3 sentences).
+
+# Main Topic
+A clear heading with 2–4 explanatory sentences.
+
+## Key Points
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+## Steps
+1. Step one in a full sentence.
+2. Step two in a full sentence.
+3. Step three in a full sentence.
+
+## Overall Summary
+A short closing summary (1–2 sentences).
+
+Use this structure ONLY when it makes sense for the question.
+Do not force it when a normal, simple answer is better.
+Do not add extra content outside the chosen style.
+
+`
+
 export async function POST(req: Request) {
     try {
         const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
@@ -37,7 +69,7 @@ export async function POST(req: Request) {
             systemInstruction: `
         You are a friendly chatbot created by Ketan Sharma.
         Always reply politely and clearly.
-      `,
+        ${structure} `,
         });
 
         const chatRes = await model.generateContent({

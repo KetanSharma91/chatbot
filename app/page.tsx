@@ -1,6 +1,6 @@
 "use client";
 import SearchBar from "@/components/SearchBar";
-import { deleteAll, getConversations, getResponse, storeResponse } from "@/utils";
+import { deleteAll, getConversations, getResponse, markdownToHtml, storeResponse } from "@/utils";
 import { useState, useEffect } from "react";
 import Image from 'next/image'
 import { ConversationItem, memory } from "@/utils/vector";
@@ -35,6 +35,7 @@ export default function Home() {
     // setQuestion("");
 
     setLoading(true);
+    setQuestion("");
     const response = await getResponse(question, file);
     setLoading(false);
 
@@ -52,7 +53,6 @@ export default function Home() {
     };
 
     await storeResponse(newConveration);
-    setQuestion("");
   }
 
   useEffect(() => {
@@ -68,66 +68,88 @@ export default function Home() {
 
   }, [conversations]);
 
-
   return (
     <section className={`w-full sm:container text-center justify-center justify-items-center items-center mx-auto sm:max-w-[600px] overflow-hidden overflow-y-auto flex flex-col mt-4 ${center ? "" : ""}`}>
 
-      <h2 className="fixed text-3xl top-5 left-5 font-black">ChatBot</h2>
+      <nav className="bg-white fixed top-0 left-0 w-full pb-3 border-b border-gray-600 text-left sm:border-none sm:bg-transparent">
+        <h2 className="text-3xl font-medium mt-5 ml-5">ChatBot</h2>
+      </nav>
 
-      <div className="w-full flex-1 sm:max-w-[600px] text-left mt-7 pb-32 overflow-y-auto">
-        {conversations && conversations.length > 0 && conversations.map((item) => (
-          <div className="mt-5" key={item.id}>
-            <div className="flex justify-end">
-              <div className="inline-block max-w-[80%] ml-22 sm:ml-45 pl-4 px-2 py-3 rounded-2xl mx-3 bg-gray-100 text-black dark:bg-gray-800 dark:text-white">
-                <p className="text-sm">{item.question}</p>
+      <div className="w-full flex-1 sm:max-w-[600px] text-left mt-13 pb-32 overflow-y-auto">
+        {conversations && conversations.length > 0 && conversations.map((item) => {
+          // const html: any = markdownToHtml(item.answer);
+          // const typed: any = useTypingEffect(html, 40);
+
+          return (
+            <div className="mt-5" key={item.id}>
+              <div className="flex justify-end">
+                <div className="inline-block max-w-[80%] ml-22 sm:ml-45 pl-4 px-2 py-3 rounded-2xl mx-3 bg-gray-100 text-black dark:bg-gray-800 dark:text-white">
+                  <p className="text-sm">{item.question}</p>
+                </div>
               </div>
-            </div>
-            <div className="mt-5 mx-3">
-              {loadingId === item.id ?
-                loading ? (
-                  <Image
-                    src="/loading.gif"
-                    alt="loading"
-                    width={30}
-                    height={30}
-                    // loading="eager"
-                    // priority
-                    className="dark:invert-100"
-                  />
-                ) : (
+              <div className="mt-5 mx-3">
+                {loadingId === item.id ?
+                  loading ? (
+                    <Image
+                      src="/loading.gif"
+                      alt="loading"
+                      width={30}
+                      height={30}
+                      // loading="eager"
+                      // priority
+                      className="dark:invert-100"
+                    />
+                  ) : (
+                    <>
+                      {/* <p>{markdownToHtml(item.answer)}</p> */}
+                      <div
+                        className="markdown"
+                        dangerouslySetInnerHTML={{ __html: markdownToHtml(item.answer) }}
+                      />
+                      {/* {typed.length < html.replace(/<[^>]+>/g, "").length ? (
+                        <p className="markdown whitespace-pre-wrap">{typed}</p>
+                      ) : (
+                        // 🔵 Final stage (full HTML rendered)
+                        <div
+                          className="markdown"
+                          dangerouslySetInnerHTML={{ __html: html }}
+                        />
+                      )} */}
+                      <div className="mt-3 cursor-pointer" onClick={() => navigator.clipboard.writeText(item.answer)}>
+                        <Image
+                          src="/copy.png"
+                          alt="copy"
+                          width={17}
+                          height={17}
+                          loading="eager"
+                          priority
+                          className="dark:invert-100"
+                        />
+                      </div>
+                    </>
+                  ) :
                   <>
-                    <p>{item.answer}</p>
+                    <div
+                      className="markdown"
+                      dangerouslySetInnerHTML={{ __html: markdownToHtml(item.answer) }}
+                    />
                     <div className="mt-3 cursor-pointer" onClick={() => navigator.clipboard.writeText(item.answer)}>
                       <Image
                         src="/copy.png"
                         alt="copy"
-                        width={23}
-                        height={23}
+                        width={17}
+                        height={17}
                         loading="eager"
                         priority
                         className="dark:invert-100"
                       />
                     </div>
                   </>
-                ) :
-                <>
-                  <p>{item.answer}</p>
-                  <div className="mt-3 cursor-pointer" onClick={() => navigator.clipboard.writeText(item.answer)}>
-                    <Image
-                      src="/copy.png"
-                      alt="copy"
-                      width={23}
-                      height={23}
-                      loading="eager"
-                      priority
-                      className="dark:invert-100"
-                    />
-                  </div>
-                </>
-              }
+                }
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         {/* <div className="mt-5">
           {question1 &&
             <div className="flex justify-end">
@@ -158,4 +180,3 @@ export default function Home() {
     </section>
   );
 }
-

@@ -56,7 +56,7 @@ export async function GET(req: Request) {
         // }
         // console.log(conversations);
 
-        console.log(memory);
+        // console.log(memory);
 
         return NextResponse.json({ ok: true, conversations: memory });
 

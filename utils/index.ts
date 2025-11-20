@@ -1,4 +1,37 @@
+"use client";
 import { ConversationItem } from "./vector";
+import { marked } from "marked";
+import { useEffect, useState } from "react";
+
+export function markdownToHtml(markdownText: string) {
+    return marked.parse(markdownText);
+}
+
+export function useTypingEffect(htmlText: string, speed = 40) {
+    const [typed, setTyped] = useState("");
+
+    useEffect(() => {
+        if (!htmlText) return;
+
+        const temp = document.createElement("div");
+        temp.innerHTML = htmlText;
+        const text = temp.innerText;
+
+        const words = text.split(" ");
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setTyped(prev => prev + (index === 0 ? "" : " ") + words[index]);
+            index++;
+            if (index >= words.length) clearInterval(interval);
+        }, speed);
+
+        return () => clearInterval(interval);
+    }, [htmlText, speed]);
+
+    return typed;
+}
+
 
 export const getResponse = async (question: string, file: File | null) => {
     try {

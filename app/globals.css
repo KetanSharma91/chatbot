@@ -24,3 +24,52 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Markdown-rendered content */
+.markdown h1 {
+  @apply text-3xl font-bold mt-6 mb-3;
+}
+
+.markdown h2 {
+  @apply text-2xl font-semibold mt-5 mb-2;
+}
+
+.markdown h3 {
+  @apply text-xl font-semibold mt-4 mb-2;
+}
+
+.markdown p {
+  @apply text-base leading-relaxed mb-4;
+}
+
+.markdown ul {
+  @apply list-disc pl-6 space-y-1 mb-4;
+}
+
+.markdown ol {
+  @apply list-decimal pl-6 space-y-1 mb-4;
+}
+
+.markdown li {
+  @apply text-base leading-relaxed;
+}
+
+.markdown code {
+  @apply bg-gray-100 px-1 py-0.5 rounded text-sm font-mono;
+}
+
+.markdown pre {
+  @apply bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono mb-4;
+}
+
+.markdown pre code {
+  @apply bg-transparent p-0;
+}
+
+.markdown a {
+  @apply text-blue-600 underline;
+}
+
+.markdown hr {
+  @apply my-6 border-gray-300;
+}
